@@ -12,6 +12,7 @@ import {
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import esLocale from 'date-fns/locale/es';
 
 function TaskForm({ onSubmit, onCancel, initialTask }) {
   const [task, setTask] = useState({
@@ -51,11 +52,14 @@ function TaskForm({ onSubmit, onCancel, initialTask }) {
       tempErrors.description = fieldValues.description
         ? ""
         : "La descripción es obligatoria.";
-    if ("dueDate" in fieldValues)
+    if ("dueDate" in fieldValues) {
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
       tempErrors.dueDate =
-        fieldValues.dueDate < new Date()
+        fieldValues.dueDate < now
           ? "La fecha de vencimiento no puede ser en el pasado."
           : "";
+    }
     setErrors(tempErrors);
     return Object.values(tempErrors).every((x) => x === "");
   };
@@ -68,7 +72,7 @@ function TaskForm({ onSubmit, onCancel, initialTask }) {
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={esLocale}>
       <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
         <TextField
           margin="normal"
@@ -114,6 +118,8 @@ function TaskForm({ onSubmit, onCancel, initialTask }) {
               aria-label="Fecha de vencimiento de la tarea"
             />
           )}
+          minDate={new Date()}
+          disablePast
         />
         {task.dueDate &&
           task.dueDate >

@@ -576,13 +576,15 @@ function Home({ isDemo = false }) {
   }, []);
 
   const handleSelectSlot = useCallback(({ start }) => {
+    const endOfDay = new Date(start);
+    endOfDay.setHours(23, 59, 59, 999);
+    
     setEditingTask({
       title: '',
       description: '',
-      dueDate: start,
+      dueDate: endOfDay,
       priority: 'baja',
       status: 'pendiente'
-      // No incluimos _id aquí
     });
     setIsFormVisible(true);
   }, []);
