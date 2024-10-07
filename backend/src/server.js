@@ -2,16 +2,16 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const path = require('path'); // Añade esta línea
-const authRoutes = require('../../backend/src/routes/authRoutes');
-const taskRoutes = require('../../backend/src/routes/taskRoutes');
+const path = require('path');
+const authRoutes = require('./routes/authRoutes');
+const taskRoutes = require('./routes/taskRoutes');
 const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
 // Configuración de CORS
 app.use(cors({
-  origin: 'http://localhost:3000', // Asegúrate de que este sea el origen de tu frontend
+  origin: process.env.NODE_ENV === 'production' ? 'https://tu-dominio.com' : 'http://localhost:3000',
   credentials: true
 }));
 
@@ -22,7 +22,7 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
   .then(() => console.log('Conectado a MongoDB'))
   .catch(err => console.error('Error al conectar a MongoDB:', err));
 
-// Rutas
+// Rutas API
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/users', userRoutes);
@@ -32,14 +32,19 @@ app.get('/api/test', (req, res) => {
   res.json({ message: 'El servidor está funcionando correctamente' });
 });
 
+// Servir archivos estáticos de avatares
+app.use('/avatars', express.static(path.join(__dirname, '..', 'public', 'avatars')));
+
+// Configuración para servir la aplicación React en producción
+if (process.env.NODE_ENV === 'production') {
+  // Servir archivos estáticos desde la carpeta build de React
+  app.use(express.static(path.join(__dirname, '../../frontend/build')));
+  
+  // Manejar cualquier solicitud que no sea a las rutas API
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/build', 'index.html'));
+  });
+}
+
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Servidor corriendo en el puerto ${PORT}`));
-
-// console.log('EMAIL_HOST:', process.env.EMAIL_HOST);
-// console.log('EMAIL_PORT:', process.env.EMAIL_PORT);
-// console.log('EMAIL_USER:', process.env.EMAIL_USER);
-// No imprimas EMAIL_PASS por razones de seguridad
-// console.log('EMAIL_FROM:', process.env.EMAIL_FROM);
-
-// Servir archivos estáticos
-app.use('/avatars', express.static(path.join(__dirname, '..', 'public', 'avatars')));
