@@ -63,7 +63,7 @@ export const testConnection = async () => {
 };
 
 // Funciones de autenticación
-export const register = (userData) => axios.post(`${API_URL}/api/auth/register`, userData);
+export const register = (userData) => axios.post(`${API_URL}/auth/register`, userData);
 export const logout = () => {
   localStorage.removeItem('token');
   // Puedes agregar aquí cualquier otra lógica necesaria para el logout
