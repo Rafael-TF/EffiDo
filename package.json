@@ -1,30 +1,33 @@
 {
-  "name": "effido",
+  "name": "ai-task-manager",
   "version": "1.0.0",
-  "description": "Gestor de tareas EffiDo",
+  "description": "AI Task Manager - Full Stack Application",
   "main": "backend/src/server.js",
   "scripts": {
     "start": "node backend/src/server.js",
     "server": "nodemon backend/src/server.js",
     "client": "npm start --prefix frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
   },
-  "keywords": ["task", "manager", "effido"],
-  "author": "Rafael TF",
+  "keywords": ["task", "manager", "AI", "fullstack"],
+  "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1",
-    "mongoose": "^6.0.12",
-    "dotenv": "^10.0.0",
-    "cors": "^2.8.5",
     "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^8.5.1",
-    "nodemailer": "^6.6.3",
-    "concurrently": "^6.0.0"
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "googleapis": "^144.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.6.1",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.15"
   },
   "devDependencies": {
-    "nodemon": "^2.0.7"
+    "concurrently": "^6.5.1",
+    "nodemon": "^2.0.22"
   },
   "engines": {
     "node": "20.x"
