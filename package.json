@@ -2,22 +2,23 @@
     "name": "effido",
     "version": "1.0.0",
     "description": "Gestor de tareas EffiDo",
-    "main": "backend/src/index.js",
+    "main": "backend/src/server.js",
     "scripts": {
-      "start": "node backend/src/index.js",
-      "server": "nodemon backend/src/index.js",
+      "start": "node backend/src/server.js",
+      "server": "nodemon backend/src/server.js",
       "client": "npm start --prefix frontend",
       "dev": "concurrently \"npm run server\" \"npm run client\"",
-      "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend",
-      "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
+      "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
     },
     "keywords": ["task", "manager", "effido"],
     "author": "Rafael TF",
     "license": "ISC",
     "dependencies": {
-      "concurrently": "^6.0.0",
       "express": "^4.17.1",
-      "mongoose": "^6.0.12"
+      "mongoose": "^6.0.12",
+      "dotenv": "^10.0.0",
+      "cors": "^2.8.5",
+      "concurrently": "^6.0.0"
     },
     "devDependencies": {
       "nodemon": "^2.0.7"
