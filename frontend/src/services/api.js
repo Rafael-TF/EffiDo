@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL 
-  ? `${process.env.REACT_APP_API_URL}/api`
-  : 'http://localhost:5001/api';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001';
+
+console.log('API_URL:', API_URL); // Para debugging
 
 
 const axiosInstance = axios.create({
@@ -51,8 +51,19 @@ export const login = async (credentials) => {
   }
 };
 
+export const testConnection = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/test`);
+    console.log('Respuesta de prueba:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error en la prueba de conexión:', error);
+    throw error;
+  }
+};
+
 // Funciones de autenticación
-export const register = (userData) => axios.post(`${API_URL}/auth/register`, userData);
+export const register = (userData) => axios.post(`${API_URL}/api/auth/register`, userData);
 export const logout = () => {
   localStorage.removeItem('token');
   // Puedes agregar aquí cualquier otra lógica necesaria para el logout

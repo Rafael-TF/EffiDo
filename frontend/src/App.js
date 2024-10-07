@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Outlet } from 'react-router-dom';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -27,6 +27,10 @@ YAxis.defaultProps = {
 };
 
 function App() {
+  useEffect(() => {
+    console.log('Entorno:', process.env.NODE_ENV);
+    console.log('API URL:', process.env.REACT_APP_API_URL);
+  }, []);
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
       <Router>
