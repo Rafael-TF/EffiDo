@@ -8,15 +8,21 @@
       "server": "nodemon backend/src/index.js",
       "client": "npm start --prefix frontend",
       "dev": "concurrently \"npm run server\" \"npm run client\"",
-      "build": "npm install --prefix frontend && npm run build --prefix frontend"
+      "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend",
+      "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
     },
     "keywords": ["task", "manager", "effido"],
     "author": "Rafael TF",
     "license": "ISC",
     "dependencies": {
-      "concurrently": "^6.0.0"
+      "concurrently": "^6.0.0",
+      "express": "^4.17.1",
+      "mongoose": "^6.0.12"
     },
     "devDependencies": {
       "nodemon": "^2.0.7"
+    },
+    "engines": {
+      "node": "20.x"
     }
   }
