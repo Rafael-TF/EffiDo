@@ -27,8 +27,12 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+const BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://effido.onrender.com' 
+  : 'http://localhost:3000';
+
 exports.sendPasswordResetEmail = async (to, resetToken) => {
-  const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+  const resetUrl = `${BASE_URL}/reset-password/${resetToken}`;
 
   const mailOptions = {
     from: process.env.EMAIL_FROM,
@@ -52,7 +56,7 @@ exports.sendPasswordResetEmail = async (to, resetToken) => {
 };
 
 exports.sendVerificationEmail = async (to, token) => {
-  const verificationUrl = `http://localhost:3000/verify-email/${encodeURIComponent(token)}`;
+  const verificationUrl = `${BASE_URL}/verify-email/${encodeURIComponent(token)}`;
   // console.log('URL de verificación generada:', verificationUrl);
 
   const mailOptions = {
