@@ -1,29 +1,31 @@
 {
-    "name": "effido",
-    "version": "1.0.0",
-    "description": "Gestor de tareas EffiDo",
-    "main": "backend/src/server.js",
-    "scripts": {
-      "start": "node backend/src/server.js",
-      "server": "nodemon backend/src/server.js",
-      "client": "npm start --prefix frontend",
-      "dev": "concurrently \"npm run server\" \"npm run client\"",
-      "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
-    },
-    "keywords": ["task", "manager", "effido"],
-    "author": "Rafael TF",
-    "license": "ISC",
-    "dependencies": {
-      "express": "^4.17.1",
-      "mongoose": "^6.0.12",
-      "dotenv": "^10.0.0",
-      "cors": "^2.8.5",
-      "concurrently": "^6.0.0"
-    },
-    "devDependencies": {
-      "nodemon": "^2.0.7"
-    },
-    "engines": {
-      "node": "20.x"
-    }
+  "name": "effido",
+  "version": "1.0.0",
+  "description": "Gestor de tareas EffiDo",
+  "main": "backend/src/server.js",
+  "scripts": {
+    "start": "node backend/src/server.js",
+    "server": "nodemon backend/src/server.js",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
+  },
+  "keywords": ["task", "manager", "effido"],
+  "author": "Rafael TF",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^6.0.12",
+    "dotenv": "^10.0.0",
+    "cors": "^2.8.5",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^8.5.1",
+    "concurrently": "^6.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "engines": {
+    "node": "20.x"
   }
+}
