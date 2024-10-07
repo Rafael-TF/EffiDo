@@ -38,11 +38,11 @@ app.use('/avatars', express.static(path.join(__dirname, '..', 'public', 'avatars
 // Configuración para servir la aplicación React en producción
 if (process.env.NODE_ENV === 'production') {
   // Servir archivos estáticos desde la carpeta build de React
-  app.use(express.static(path.join(__dirname, '../frontend/build')));
+  app.use(express.static(path.join(__dirname, '../../frontend/build')));
   
   // Manejar cualquier solicitud que no sea a las rutas API
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+    res.sendFile(path.join(__dirname, '../../frontend/build', 'index.html'));
   });
 }
 
