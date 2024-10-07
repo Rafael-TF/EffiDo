@@ -10,8 +10,12 @@ const userRoutes = require('./routes/userRoutes');
 const app = express();
 
 // Configuración de CORS
+const cors = require('cors');
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? 'https://effido.onrender.com' : 'http://localhost:3000',
+  origin: process.env.NODE_ENV === 'production' 
+    ? 'https://effido.onrender.com' 
+    : 'http://localhost:3000',
   credentials: true
 }));
 
