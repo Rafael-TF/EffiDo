@@ -2,9 +2,10 @@ import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'reac
 import { 
   Container, Typography, Box, Button, Paper, ThemeProvider, 
   createTheme, Snackbar, Menu, MenuItem, Modal, Fade,
-  useMediaQuery, useTheme
+  useMediaQuery, useTheme, Fab
 } from '@mui/material';
 import { Calendar, dateFnsLocalizer, Views } from 'react-big-calendar';
+import AddIcon from '@mui/icons-material/Add';
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
 import startOfWeek from 'date-fns/startOfWeek';
@@ -452,10 +453,27 @@ function Home({ isDemo = false }) {
         color: 'white',
         border: 'none',
         padding: '2px 5px',
-        display: 'block'
+        display: 'block',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        fontSize: isMobile ? '0.7rem' : '0.9rem'
       }
     };
-  }, []);
+  }, [isMobile]);
+
+  const formats = {
+    weekdayFormat: (date, culture, localizer) =>
+      isMobile
+        ? localizer.format(date, 'EEEEE', culture)
+        : localizer.format(date, 'EEEE', culture)
+  };
+
+  const CustomEvent = ({ event }) => (
+    <span title={event.title}>
+      {isMobile ? event.title.slice(0, 3) + '...' : event.title}
+    </span>
+  );
 
   const handleNavigate = useCallback((newDate) => {
     setCurrentDate(newDate);
@@ -609,6 +627,7 @@ function Home({ isDemo = false }) {
     setSelectedDayTasks([]);
   };
 
+
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ 
@@ -617,34 +636,36 @@ function Home({ isDemo = false }) {
         minHeight: '100vh',
         bgcolor: 'background.default'
       }}>
-        <Navbar onViewChange={setView} onNewTask={() => setIsFormVisible(true)} isDemo={isDemo} />
+        <Navbar onViewChange={setView} onNewTask={handleNewTask} isDemo={isDemo} />
         {isDemo && <Container maxWidth="lg" sx={{ mt: 2 }}><DemoBanner /></Container>}
         <Container component="main" maxWidth="lg" sx={{ mt: 4, mb: 4, flexGrow: 1 }}>
           <Paper elevation={0} sx={{ p: 3, minHeight: 'calc(100vh - 200px)', ...calendarStyles }}>
             {view === 'calendar' ? (
               <DnDCalendar
-              localizer={localizer}
-              events={calendarEvents}
-              startAccessor="start"
-              endAccessor="end"
-              style={{ height: '100%', minHeight: '500px' }}
-              eventPropGetter={eventStyleGetter}
-              messages={messages}
-              culture='es'
-              onSelectEvent={handleSelectEvent}
-              onSelectSlot={handleSelectSlot}
-              selectable
-              views={{month: true, week: true, day: true, agenda: true}}
-              defaultView={Views.MONTH}
-              date={currentDate}
-              onNavigate={handleNavigate}
-              components={{
-                toolbar: (toolbarProps) => <CustomToolbar {...toolbarProps} date={currentDate} />
-              }}
-              onShowMore={handleShowMoreClick}
-              onEventDrop={handleEventDrop}
-              resizable={false}
-            />
+                localizer={localizer}
+                events={calendarEvents}
+                startAccessor="start"
+                endAccessor="end"
+                style={{ height: '100%', minHeight: '500px' }}
+                eventPropGetter={eventStyleGetter}
+                messages={messages}
+                culture='es'
+                onSelectEvent={handleSelectEvent}
+                onSelectSlot={handleSelectSlot}
+                selectable
+                views={{month: true, week: true, day: true, agenda: true}}
+                defaultView={Views.MONTH}
+                date={currentDate}
+                onNavigate={handleNavigate}
+                components={{
+                  toolbar: (toolbarProps) => <CustomToolbar {...toolbarProps} date={currentDate} />,
+                  event: CustomEvent
+                }}
+                onShowMore={handleShowMoreClick}
+                onEventDrop={handleEventDrop}
+                resizable={false}
+                formats={formats}
+              />
             ) : (
               <>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -684,6 +705,21 @@ function Home({ isDemo = false }) {
           </Paper>
         </Container>
         <Footer />
+        {isMobile && (
+          <Fab 
+            color="primary" 
+            aria-label="add"
+            onClick={handleNewTask}
+            sx={{
+              position: 'fixed',
+              bottom: 16,
+              right: 16,
+              zIndex: 1000
+            }}
+          >
+            <AddIcon />
+          </Fab>
+        )}
       </Box>
       <LimitReachedModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       <Modal
@@ -735,41 +771,41 @@ function Home({ isDemo = false }) {
       />
       {isFormVisible && (
         <Modal
-        open={isFormVisible}
-        onClose={() => setIsFormVisible(false)}
-        closeAfterTransition
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={isFormVisible}>
-          <Box sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: isMobile ? '90%' : 400,
-            bgcolor: 'background.paper',
-            boxShadow: 24,
-            p: 4,
-            borderRadius: 2,
-          }}>
-            <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
-              {editingTask && editingTask._id ? 'Editar Tarea' : 'Crear Nueva Tarea'}
-            </Typography>
-            <Suspense fallback={<div>Cargando...</div>}>
-              <TaskForm
-                onSubmit={editingTask && editingTask._id ? handleUpdateTask : handleCreateTask}
-                initialTask={editingTask}
-                onCancel={() => {
-                  setEditingTask(null);
-                  setIsFormVisible(false);
-                }}
-              />
-            </Suspense>
-          </Box>
-        </Fade>
-      </Modal>
+          open={isFormVisible}
+          onClose={() => setIsFormVisible(false)}
+          closeAfterTransition
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={isFormVisible}>
+            <Box sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: isMobile ? '90%' : 400,
+              bgcolor: 'background.paper',
+              boxShadow: 24,
+              p: 4,
+              borderRadius: 2,
+            }}>
+              <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
+                {editingTask && editingTask._id ? 'Editar Tarea' : 'Crear Nueva Tarea'}
+              </Typography>
+              <Suspense fallback={<div>Cargando...</div>}>
+                <TaskForm
+                  onSubmit={editingTask && editingTask._id ? handleUpdateTask : handleCreateTask}
+                  initialTask={editingTask}
+                  onCancel={() => {
+                    setEditingTask(null);
+                    setIsFormVisible(false);
+                  }}
+                />
+              </Suspense>
+            </Box>
+          </Fade>
+        </Modal>
       )}
       {isDayTasksPanelOpen && (
         <DayTasksPanel
