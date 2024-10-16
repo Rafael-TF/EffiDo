@@ -1,12 +1,14 @@
-const User = require('../models/User');
-const Task = require('../models/Task');
-const fs = require('fs');
-const path = require('path');
-const bcrypt = require('bcryptjs');
+import User from '../models/User.js';
+import Task from '../models/Task.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import bcrypt from 'bcryptjs';
 
-exports.getUserProfile = async (req, res) => {
-  // console.log('Solicitud recibida para obtener perfil de usuario');
-  // console.log('Usuario en la solicitud:', req.user);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export const getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
     if (!user) {
@@ -19,7 +21,7 @@ exports.getUserProfile = async (req, res) => {
   }
 };
 
-exports.updateUserProfile = async (req, res) => {
+export const updateUserProfile = async (req, res) => {
   try {
     const { username, email } = req.body;
     const user = await User.findById(req.user.id);
@@ -39,7 +41,7 @@ exports.updateUserProfile = async (req, res) => {
   }
 };
 
-exports.changePassword = async (req, res) => {
+export const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
 
@@ -63,64 +65,48 @@ exports.changePassword = async (req, res) => {
 
     res.json({ message: 'Contraseña cambiada exitosamente' });
   } catch (error) {
-    // console.error('Error al cambiar la contraseña:', error);
     res.status(500).json({ message: 'Error al cambiar la contraseña' });
   }
 };
 
-exports.deleteAccount = async (req, res) => {
+export const deleteAccount = async (req, res) => {
   try {
-    // Eliminar todas las tareas del usuario
     await Task.deleteMany({ user: req.user.id });
-
-    // Eliminar el usuario
     await User.findByIdAndDelete(req.user.id);
-
     res.json({ message: 'Cuenta eliminada exitosamente' });
   } catch (error) {
-    // console.error('Error al eliminar la cuenta:', error);
     res.status(500).json({ message: 'Error al eliminar la cuenta', error: error.message });
   }
 };
 
-exports.uploadAvatar = async (req, res) => {
+export const uploadAvatar = async (req, res) => {
   try {
-    // console.log('Iniciando carga de avatar');
-    // console.log('Archivo recibido:', req.file);
-    
     if (!req.file) {
-      // console.log('No se ha subido ningún archivo');
       return res.status(400).json({ message: 'No se ha subido ningún archivo' });
     }
 
     const user = await User.findById(req.user.id);
     if (!user) {
-      // console.log('Usuario no encontrado');
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    // Si el usuario ya tiene un avatar, elimina el archivo anterior
     if (user.avatarUrl) {
       const oldAvatarPath = path.join(__dirname, '..', '..', 'public', 'avatars', path.basename(user.avatarUrl));
       if (fs.existsSync(oldAvatarPath)) {
         fs.unlinkSync(oldAvatarPath);
-        // console.log('Avatar anterior eliminado');
       }
     }
 
-    // Guarda la nueva URL del avatar
     user.avatarUrl = `/avatars/${req.file.filename}`;
     await user.save();
-    // console.log('Avatar actualizado en la base de datos');
 
     res.json({ avatarUrl: user.avatarUrl });
   } catch (error) {
-    // console.error('Error al subir el avatar:', error);
     res.status(500).json({ message: 'Error al subir el avatar', error: error.message });
   }
 };
 
-exports.getUserStats = async (req, res) => {
+export const getUserStats = async (req, res) => {
   try {
     const userId = req.user.id;
     const tasks = await Task.find({ user: userId });
@@ -143,12 +129,11 @@ exports.getUserStats = async (req, res) => {
 
     res.json(stats);
   } catch (error) {
-    // console.error('Error al obtener estadísticas del usuario:', error);
     res.status(500).json({ message: 'Error al obtener estadísticas del usuario' });
   }
 };
 
-exports.getUserAchievements = async (req, res) => {
+export const getUserAchievements = async (req, res) => {
   try {
     const userId = req.user.id;
     const tasks = await Task.find({ user: userId });
@@ -156,21 +141,18 @@ exports.getUserAchievements = async (req, res) => {
 
     res.json(achievements);
   } catch (error) {
-    // console.error('Error al obtener logros del usuario:', error);
     res.status(500).json({ message: 'Error al obtener logros del usuario' });
   }
 };
 
-// Funciones auxiliares para cálculos
+// Funciones auxiliares
 function calculateProductivityScore(tasks) {
-  // Implementa la lógica real para calcular la puntuación de productividad
   const completedTasks = tasks.filter(task => task.status === 'completada');
   const totalDifficulty = completedTasks.reduce((sum, task) => sum + (task.difficulty || 1), 0);
   return Math.min(100, Math.floor((totalDifficulty / tasks.length) * 100)) || 0;
 }
 
 function calculateStreakDays(tasks) {
-  // Implementa la lógica real para calcular los días consecutivos de actividad
   let streak = 0;
   let maxStreak = 0;
   let lastDate = null;

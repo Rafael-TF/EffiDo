@@ -1,7 +1,8 @@
-const express = require('express');
+import express from 'express';
+import * as authController from '../controllers/authController.js';
+import auth from '../middleware/auth.js';
+
 const router = express.Router();
-const authController = require('../controllers/authController');
-const auth = require('../middleware/auth'); // Añade esta línea
 
 // Ruta de prueba
 router.get('/test', (req, res) => {
@@ -18,4 +19,4 @@ router.post('/reset-password/:token', authController.resetPassword);
 
 router.get('/verify-email/:token', authController.verifyEmail);
 
-module.exports = router;
+export default router;

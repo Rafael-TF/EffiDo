@@ -1,9 +1,14 @@
-const express = require('express');
+import express from 'express';
+import * as userController from '../controllers/userController.js';
+import auth from '../middleware/auth.js';
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const router = express.Router();
-const userController = require('../controllers/userController');
-const auth = require('../middleware/auth');
-const multer = require('multer');
-const path = require('path');
 
 // Configuración de multer para la subida de archivos
 const storage = multer.diskStorage({
@@ -27,4 +32,4 @@ router.post('/avatar', auth, upload.single('avatar'), userController.uploadAvata
 router.get('/stats', auth, userController.getUserStats);
 router.get('/achievements', auth, userController.getUserAchievements);
 
-module.exports = router;
+export default router;
