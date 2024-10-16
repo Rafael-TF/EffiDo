@@ -1,5 +1,5 @@
-const nodemailer = require('nodemailer');
-const { google } = require('googleapis');
+import nodemailer from 'nodemailer';
+import { google } from 'googleapis';
 
 const OAuth2 = google.auth.OAuth2;
 
@@ -27,11 +27,11 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-const BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://effido.onrender.com' 
+const BASE_URL = process.env.NODE_ENV === 'production'
+  ? 'https://effido.onrender.com'
   : 'http://localhost:3000';
 
-exports.sendPasswordResetEmail = async (to, resetToken) => {
+export const sendPasswordResetEmail = async (to, resetToken) => {
   const resetUrl = `${BASE_URL}/reset-password/${resetToken}`;
 
   const mailOptions = {
@@ -48,16 +48,13 @@ exports.sendPasswordResetEmail = async (to, resetToken) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    // console.log('Password reset email sent successfully');
   } catch (error) {
-    // console.error('Error sending password reset email:', error);
     throw new Error('Error al enviar el correo electrónico de restablecimiento de contraseña');
   }
 };
 
-exports.sendVerificationEmail = async (to, token) => {
+export const sendVerificationEmail = async (to, token) => {
   const verificationUrl = `${BASE_URL}/verify-email/${encodeURIComponent(token)}`;
-  // console.log('URL de verificación generada:', verificationUrl);
 
   const mailOptions = {
     from: process.env.EMAIL_FROM,
@@ -73,32 +70,7 @@ exports.sendVerificationEmail = async (to, token) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    // console.log('Email de verificación enviado a:', to);
   } catch (error) {
-    // console.error('Error al enviar email de verificación:', error);
     throw error;
   }
 };
-
-// exports.sendVerificationEmail = async (to, verificationToken) => {
-//   const verificationUrl = `http://localhost:3000/verify-email/${verificationToken}`;
-
-//   const mailOptions = {
-//     from: process.env.EMAIL_FROM,
-//     to: to,
-//     subject: 'Verifica tu dirección de email',
-//     html: `
-//       <p>Por favor, verifica tu dirección de email haciendo clic en el siguiente enlace:</p>
-//       <a href="${verificationUrl}">${verificationUrl}</a>
-//       <p>Si no solicitaste esto, puedes ignorar este correo electrónico.</p>
-//     `
-//   };
-
-//   try {
-//     await transporter.sendMail(mailOptions);
-//     console.log('Email de verificación enviado a:', to);
-//   } catch (error) {
-//     console.error('Error al enviar email de verificación:', error);
-//     throw error;
-//   }
-// };

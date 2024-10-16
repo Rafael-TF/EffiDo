@@ -1,26 +1,26 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
 
-const auth = async (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
   try {
-    const token = req.header('Authorization').replace('Bearer ', '');
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findOne({ _id: decoded.userId });
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decodedToken.userId);
 
     if (!user) {
-      throw new Error();
+      throw new Error('Usuario no encontrado');
     }
 
     if (!user.isEmailVerified) {
       return res.status(403).json({ message: 'Por favor, verifica tu email antes de acceder' });
     }
 
-    req.token = token;
-    req.user = user;
+    req.user = { id: user._id };
     next();
   } catch (error) {
-    res.status(401).json({ message: 'Por favor, autentíquese' });
+    // console.error('Error de autenticación:', error);
+    res.status(401).json({ message: 'Autenticación fallida' });
   }
 };
 
-module.exports = auth;
+export default authMiddleware;

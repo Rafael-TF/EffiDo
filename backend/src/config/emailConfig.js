@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 console.log('Configurando transporter con:', {
   user: process.env.EMAIL_USER,
@@ -29,4 +29,4 @@ transporter.verify(function(error, success) {
   }
 });
 
-module.exports = transporter;
+export default transporter;
