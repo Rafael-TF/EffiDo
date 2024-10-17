@@ -3,7 +3,7 @@
 ¡Bienvenido a **EffiDo**! Una **aplicación web completa** de gestión de tareas diseñada para aumentar la productividad personal y profesional. EffiDo combina un frontend intuitivo y atractivo con un backend robusto para ofrecer una experiencia de usuario fluida y eficiente en la organización y seguimiento de tareas.
 
 <div align="center">
-  <img src="https://github.com/Rafael-TF/Portafolio/raw/main/src/Recursos/effido/ImagenEffido1.jpg" alt="EffiDo" width="600" style="border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);"/>
+  <img src="https://github.com/Rafael-TF/Portafolio/blob/main/src/Recursos/effido/EFFIDO.jpg" alt="EffiDo" width="600" style="border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);"/>
 </div>
 
 ---
