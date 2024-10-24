@@ -22,6 +22,8 @@ app.use(cors({
   credentials: true
 }));
 
+// Cambios
+
 app.use(express.json());
 
 // Conectar a MongoDB
