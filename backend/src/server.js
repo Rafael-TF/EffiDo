@@ -22,7 +22,6 @@ app.use(cors({
   credentials: true
 }));
 
-// Cambios
 
 app.use(express.json());
 
